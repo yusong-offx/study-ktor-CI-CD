@@ -1,0 +1,8 @@
+version: '3.9'
+services:
+  ktor:
+    image: openjdk:18-jdk-alpine
+    volumes:
+      - .:/ktor-sample
+    working_dir: /ktor-sample
+    command: ./gradlew ktlintCheck
