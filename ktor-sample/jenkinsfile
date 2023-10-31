@@ -1,19 +1,32 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
-            steps {
-                echo 'gradle build'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'gradle test'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'gradle deploy'
+        stage('Run') {
+            parallel {
+                stage('Build') {
+                    steps {
+                        sh """
+                        cd ktor-sample
+                        ./gradlew :build --parallel
+                        """
+                    }
+                }
+                stage('Ktlint') {
+                    steps {
+                        sh """
+                        cd ktor-sample
+                        ./gradlew ktlintCheck
+                        """
+                    }
+                }
+                stage('Test') {
+                    steps {
+                        sh """
+                        cd ktor-sample
+                        ./gradlew :test --parallel
+                        """
+                    }
+                }                
             }
         }
     }
